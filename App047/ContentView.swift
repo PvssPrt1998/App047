@@ -1,24 +1,30 @@
-//
-//  ContentView.swift
-//  App047
-//
-//  Created by Николай Щербаков on 05.02.2025.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var screen: Screen = .splash
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        switch screen {
+        case .splash:
+            Splash(screen: $screen)
+        case .onboarding:
+            OnboardingView(screen: $screen)
+        case .paywall:
+            PaywallView(screen: $screen)
+        case .main:
+            Tab(screen: $screen)
+        case .notification:
+            NotificationView(screen: $screen)
+        case .createWithPhoto:
+            CreateWithPhoto(screen: $screen)
+        case .result:
+            ResultView(screen: $screen)
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(Source())
 }
