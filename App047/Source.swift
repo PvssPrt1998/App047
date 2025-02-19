@@ -350,12 +350,102 @@ final class Source: ObservableObject {
             return documentsPath.appending(name)
     }
     
+    func textToVideo1(text: String, errorHandler: @escaping () -> Void, completion: @escaping (String) -> ()) {
+        guard let url = URL(string: "https://teremappol.shop/video") else {
+            print("Invalid URL for textToVideo.")
+            errorHandler()
+            return
+        }
+        let parameters: [String: Any] = [
+            "prompt": text,
+            "user_id" : API.key, //"c82d075d-b216-4e24-acbb-5f70db5dd864",
+            "app_bundle": "com.iri.m1n1m4x41vg"
+        ]
+        var body = Data()
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "accept")
+        request.setValue("c82d075d-b216-4e24-acbb-5f70db5dd864", forHTTPHeaderField: "access-token")
+        let boundary = UUID().uuidString
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        body.append("--\(boundary)\r\n")
+        body.append("Content-Disposition: form-data; name=\"prompt\"\r\n\r\n")
+        body.append("\(text)\r\n")
+        body.append("Content-Disposition: form-data; name=\"user_id\"\r\n\r\n")
+        body.append("\(API.key)\r\n")
+        body.append("Content-Disposition: form-data; name=\"app_bundle\"\r\n\r\n")
+        body.append("com.iri.m1n1m4x41vg\r\n")
+        
+        body.append("--\(boundary)--\r\n")
+        request.httpBody = body
+        let session = URLSession.shared
+//        do {
+//            let json = try JSONSerialization.data(withJSONObject: parameters, options: [.fragmentsAllowed])
+//            let jsonTest = try JSONSerialization.jsonObject(with: json)
+//            print(jsonTest)
+//          request.httpBody = json
+//        } catch let error {
+//          print(error.localizedDescription)
+//            print(error)
+//          return
+//        }
+        // create dataTask using the session object to send data to the server
+        let task = session.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Post Request Error: \(error.localizedDescription)")
+                print(error)
+                errorHandler()
+                return
+            }
+            guard let responseData = data else {
+                errorHandler()
+              print("nil Data received from the server")
+              return
+            }
+            if let rawResponse = String(data: responseData, encoding: .utf8) {
+                print("Raw Response to generate with text:\n\(rawResponse)")
+            } else {
+                print("Unable to parse raw response as string.")
+            }
+          // ensure there is valid response code returned from this HTTP response
+            print("text2Video \(response)")
+          guard let httpResponse = response as? HTTPURLResponse,
+                (200...299).contains(httpResponse.statusCode)
+          else {
+            print("Invalid Response received from the server")
+            errorHandler()
+            return
+          }
+          // ensure there is data returned
+          
+          
+          do {
+              let response = try JSONDecoder().decode(ResponseID.self, from: responseData)
+              print("data")
+              print(response.id)
+              if response.isInvalid {
+                  errorHandler()
+              } else {
+                  self.save(response.id, isEffect: false)
+                  completion(response.id)
+              }
+          } catch let error {
+            //print(error.localizedDescription)
+              errorHandler()
+              print("error: ", error)
+          }
+        }
+        task.resume()
+    }
+    
     func textToVideo(text: String, errorHandler: @escaping () -> Void, completion: @escaping (String) -> ()) {
         let parameters: [String: Any] = [
             "prompt": text,
             "user_id" : API.key, //"c82d075d-b216-4e24-acbb-5f70db5dd864",
             "app_bundle": "com.iri.m1n1m4x41vg"
         ]
+        print(text)
         guard let url =  URL(string: API.url) else { return }
         let session = URLSession.shared
         var request = URLRequest(url: url)
@@ -390,11 +480,12 @@ final class Source: ObservableObject {
               return
             }
             if let rawResponse = String(data: responseData, encoding: .utf8) {
-                print("Raw Response to generateEffect:\n\(rawResponse)")
+                print("Raw Response to generate with text:\n\(rawResponse)")
             } else {
                 print("Unable to parse raw response as string.")
             }
           // ensure there is valid response code returned from this HTTP response
+            print("text2Video \(response)")
           guard let httpResponse = response as? HTTPURLResponse,
                 (200...299).contains(httpResponse.statusCode)
           else {
@@ -407,6 +498,7 @@ final class Source: ObservableObject {
           
           do {
               let response = try JSONDecoder().decode(ResponseID.self, from: responseData)
+              print("data")
               print(response.id)
               if response.isInvalid {
                   errorHandler()
@@ -464,7 +556,7 @@ final class Source: ObservableObject {
     }
     
     func videoById(id: String, completion: @escaping (URL) -> (), errorHandler: @escaping () -> Void) {
-        guard let url =  URL(string: API.url + "/file/" + id) else { return }
+        guard let url =  URL(string: "https://teremappol.shop/video" + "/file/" + id) else { return }
         let session = URLSession.shared
         var request = URLRequest(url: url)
         request.addValue("*/*", forHTTPHeaderField: "accept")
@@ -515,7 +607,8 @@ final class Source: ObservableObject {
     }
     
     func isGenerationFinished(id: String, completion: @escaping (Bool) -> (), errorHandler: @escaping () -> Void) {
-        guard let url =  URL(string: API.url + "/" + id) else { return }
+        print("isGenerationFinished")
+        guard let url =  URL(string: "https://teremappol.shop/video" + "/" + id) else { return }
         let session = URLSession.shared
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "accept")
@@ -533,7 +626,6 @@ final class Source: ObservableObject {
           guard let httpResponse = response as? HTTPURLResponse,
                 (200...299).contains(httpResponse.statusCode)
           else {
-              print(response)
             print("Invalid Response received from the server")
             errorHandler()
             return
@@ -547,6 +639,7 @@ final class Source: ObservableObject {
           
           do {
               let response = try JSONDecoder().decode(ResponseID.self, from: responseData)
+              print(response)
               if response.isInvalid {
                   errorHandler()
               } else {
@@ -582,6 +675,6 @@ private extension Data {
 
 class API {
     static var key = "c82d075d-b216-4e24-acbb-5f70db5dd864"
-    static var url = "https://teremappol.shop/video"
+    static var url = "https://teremappol.shop/video/text"
     static var imageServerUrl = "https://huggerapp.shop/api/upload"
 }

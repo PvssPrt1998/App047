@@ -136,6 +136,7 @@ struct ResultView: View {
                 }
             }
         } errorHandler: {
+            
         }
     }
     

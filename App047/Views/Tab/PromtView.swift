@@ -19,7 +19,9 @@ struct PromtView: View {
                     .frame(maxHeight: .infinity, alignment: .top)
                 
                 Button {
+                    source.preventDouble = false
                     source.promts = text
+                    print(source.promts)
                     source.isEffect = false
                     withAnimation {
                         screen = .result

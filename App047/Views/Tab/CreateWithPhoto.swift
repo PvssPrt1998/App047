@@ -54,6 +54,7 @@ struct CreateWithPhoto: View {
                 }
                 
                 Button {
+                    source.preventDouble = false
                     source.effectImage = inputImage
                     source.isEffect = true
                     withAnimation {
