@@ -61,10 +61,18 @@ final class Source: ObservableObject {
     func returnPrice(product: ApphudProduct) -> String {
         return product.skProduct?.price.stringValue ?? ""
     }
-    
+
     @MainActor
     func returnPriceSign(product: ApphudProduct) -> String {
         return product.skProduct?.priceLocale.currencySymbol ?? ""
+    }
+    
+    private func getSubscriptionPrice(for product: ApphudProduct) -> Double {
+        if let price = product.skProduct?.price {
+            return Double(truncating: price)
+        } else {
+            return 0
+        }
     }
     
     @MainActor

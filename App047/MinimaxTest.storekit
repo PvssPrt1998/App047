@@ -73,7 +73,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "10",
+          "displayPrice" : "5",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "1E016BAF",
@@ -85,7 +85,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "week_10_nottrial",
+          "productID" : "week_4.99_nottrial",
           "recurringSubscriptionPeriod" : "P1W",
           "referenceName" : "Weekly",
           "subscriptionGroupID" : "03C4BD92",
@@ -98,7 +98,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "15",
+          "displayPrice" : "40",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "22D37968",
@@ -110,7 +110,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "yearly_15_nottrial",
+          "productID" : "yearly_39.99_nottrial",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Yearly",
           "subscriptionGroupID" : "03C4BD92",

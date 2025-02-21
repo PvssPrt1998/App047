@@ -1,4 +1,5 @@
 import SwiftUI
+import ApphudSDK
 
 struct PaywallView: View {
     
@@ -161,16 +162,16 @@ struct PaywallView: View {
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(!isYear ? .cPrimary : .white.opacity(0.28))
                 .frame(width: 32, height: 32)
-            Text(source.returnName(product: source.productsApphud[1]))
+            Text(source.returnName(product: source.productsApphud[0]))
                 .font(.system(size: 17, weight: .regular))
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 0) {
-                Text(source.returnPriceSign(product: source.productsApphud[1]) + source.returnPrice(product: source.productsApphud[1]))
+                Text(source.returnPriceSign(product: source.productsApphud[0]) + source.returnPrice(product: source.productsApphud[0]))
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.white)
                 
-                Text("/ week")
+                Text(" / week")
                     .font(.system(size: 12, weight: .regular))
                     .foregroundColor(.white.opacity(0.6))
             }
@@ -198,20 +199,20 @@ struct PaywallView: View {
                 .foregroundColor(isYear ? .cPrimary : .white.opacity(0.28))
                 .frame(width: 32, height: 32)
             VStack(alignment: .leading , spacing: 2) {
-                Text(source.returnName(product: source.productsApphud[0]))
+                Text(source.returnName(product: source.productsApphud[1]))
                     .font(.system(size: 17, weight: .regular))
                     .foregroundColor(.white)
-//                Text(source.returnPriceSign(product: source.productsApphud[0]) + source.returnPrice(product: source.productsApphud[0]) + " per year")
-//                    .font(.system(size: 12, weight: .regular))
-//                    .foregroundColor(.white)
+                Text(source.returnPriceSign(product: source.productsApphud[1]) + "\(Double(String(format: "%.2f", getSubscriptionPrice(for: source.productsApphud[1]) / 52)) ?? 0.0)" + " per week")
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundColor(.white.opacity(0.4))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 0) {
-                Text(source.returnPriceSign(product: source.productsApphud[0]) + source.returnPrice(product: source.productsApphud[0]))
+                Text(source.returnPriceSign(product: source.productsApphud[1]) + source.returnPrice(product: source.productsApphud[1]))
                     .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.white)
                 
-                Text("/ year")
+                Text(" / year")
                     .font(.system(size: 12, weight: .regular))
                     .foregroundColor(.white.opacity(0.6))
             }
@@ -242,6 +243,14 @@ struct PaywallView: View {
             
             ,alignment: .topTrailing
         )
+    }
+    
+    private func getSubscriptionPrice(for product: ApphudProduct) -> Double {
+        if let price = product.skProduct?.price {
+            return Double(truncating: price)
+        } else {
+            return 0
+        }
     }
 }
 
